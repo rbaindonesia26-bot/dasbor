@@ -33,14 +33,24 @@
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        /* Tambahan style khusus saat render PDF agar stabil dan elegan */
+        
+        /* --- PERBAIKAN CSS KHUSUS PDF --- */
         .pdf-mode {
+            /* Memaksa lebar tetap setara dokumen A4 desktop agar tidak mengerut */
+            width: 800px !important; 
+            max-width: 800px !important;
+            min-width: 800px !important;
             background-color: white !important;
             color: #111827 !important;
             padding: 40px !important;
+            margin: 0 !important;
         }
         .pdf-mode * {
-            box-shadow: none !important;
+            box-shadow: none !important; /* Menghilangkan bayangan agar rapi saat dicetak */
+        }
+        /* Mencegah kartu riwayat terpotong di antara 2 halaman PDF */
+        .timeline-item {
+            page-break-inside: avoid !important;
         }
     </style>
 </head>
@@ -75,7 +85,7 @@
         </div>
         
         <div class="absolute bottom-6 text-xs text-gray-400 font-light tracking-widest uppercase">
-            Halaqah Tracker Pro PNG v3.1
+            Halaqah Tracker Pro PNG v3.2
         </div>
     </div>
 
@@ -105,7 +115,8 @@
                     </button>
                 </div>
             </div>
-            <div id="rapor-result-container" class="mt-8 space-y-6"></div>
+            <!-- Ditambahkan flex-col dan items-center agar wrapper rapor terpusat sempurna -->
+            <div id="rapor-result-container" class="mt-8 space-y-6 flex flex-col items-center"></div>
         </main>
     </div>
 
@@ -314,15 +325,21 @@
         function downloadPDF(jamaahId, jamaahName) {
             const element = document.getElementById(`rapor-pdf-content-${jamaahId}`);
             
-            // Tambahkan class agar styling PDF stabil (layar putih, tulisan jelas)
+            // Tambahkan class agar ukuran container menjadi fixed width (800px)
             element.classList.add('pdf-mode');
 
-            // Setup opsi html2pdf
+            // Setup opsi html2pdf yang disempurnakan (TIDAK MENGERUT)
             const opt = {
-                margin:       [10, 10, 10, 10], // Margin atas, kiri, bawah, kanan (dalam mm)
+                margin:       [10, 0, 10, 0], // Margin atas, kiri, bawah, kanan (dalam mm)
                 filename:     `Rapor_Mutabaah_${jamaahName.replace(/\s+/g, '_')}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                image:        { type: 'jpeg', quality: 1.0 },
+                html2canvas:  { 
+                    scale: 2, 
+                    useCORS: true,
+                    logging: false,
+                    windowWidth: 800, // PAKSA canvas merender elemen seolah dibuka di Desktop 800px
+                    width: 800        // PAKSA canvas width
+                },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
@@ -350,14 +367,14 @@
             const container = document.getElementById('rapor-result-container');
             
             if(!query) {
-                container.innerHTML = `<div class="text-center p-6 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl font-medium border border-red-200 dark:border-red-800">Silakan masukkan nama Anda terlebih dahulu.</div>`;
+                container.innerHTML = `<div class="text-center w-full p-6 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl font-medium border border-red-200 dark:border-red-800">Silakan masukkan nama Anda terlebih dahulu.</div>`;
                 return;
             }
 
             const results = dataHalaqah.filter(j => j.name.toLowerCase().includes(query));
 
             if(results.length === 0) {
-                container.innerHTML = `<div class="text-center p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700"><p class="text-gray-600 dark:text-gray-400 font-medium">Maaf, nama <strong class="text-gray-800 dark:text-gray-200">"${query}"</strong> tidak ditemukan.</p></div>`;
+                container.innerHTML = `<div class="text-center w-full p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700"><p class="text-gray-600 dark:text-gray-400 font-medium">Maaf, nama <strong class="text-gray-800 dark:text-gray-200">"${query}"</strong> tidak ditemukan.</p></div>`;
                 return;
             }
 
@@ -374,13 +391,14 @@
                         if(rec.mutabaah === "Tuntas") mColor = "text-emerald-600";
                         if(rec.mutabaah === "Belum") mColor = "text-red-600";
 
+                        // Perhatikan kelas 'timeline-item' digunakan agar PDF tidak memotong elemen ini menjadi setengah halaman
                         historyHTML += `
-                        <div class="relative">
+                        <div class="relative timeline-item">
                             <div class="absolute -left-[31px] top-1 w-4 h-4 bg-emerald-500 rounded-full ring-4 ring-white dark:ring-gray-900"></div>
                             <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm">
                                 <div class="flex justify-between items-center mb-2 border-b border-gray-200 dark:border-gray-600 pb-2">
                                     <h4 class="font-bold text-emerald-800 dark:text-emerald-400">${formatDateID(rec.date)}</h4>
-                                    <span class="text-xs px-2 py-1 bg-gray-200 dark:bg-gray-600 rounded font-bold">${rec.attendance}</span>
+                                    <span class="text-xs px-2 py-1 bg-gray-200 dark:bg-gray-600 rounded font-bold text-gray-700 dark:text-gray-200">${rec.attendance}</span>
                                 </div>
                                 <p class="text-sm font-medium text-gray-800 dark:text-gray-200 mb-3"><strong class="text-emerald-600 dark:text-emerald-400">Progres:</strong> ${rec.progress}</p>
                                 <div class="flex flex-wrap gap-4 text-xs font-bold uppercase tracking-wider">
@@ -397,30 +415,30 @@
                 }
 
                 return `
-                <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
+                <div class="bg-white dark:bg-gray-800 w-full max-w-[800px] rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
                     
                     <!-- KONTEN YANG AKAN DI-CONVERT KE PDF -->
-                    <div id="rapor-pdf-content-${jamaah.id}" class="bg-white text-gray-900 p-6 md:p-10 relative dark:bg-gray-800 dark:text-gray-100">
+                    <div id="rapor-pdf-content-${jamaah.id}" class="bg-white text-gray-900 p-6 sm:p-10 relative dark:bg-gray-800 dark:text-gray-100">
                         
                         <!-- HEADER PDF EKSKLUSIF (Rapor Resmi) -->
-                        <div class="border-b-4 border-emerald-600 pb-6 mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div class="border-b-4 border-emerald-600 pb-6 mb-8 flex justify-between items-center">
                             <div class="flex items-center gap-4">
                                 <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/50 rounded-full flex items-center justify-center border-2 border-emerald-500 text-emerald-600 dark:text-emerald-400">
                                     <i class="fa-solid fa-book-quran text-3xl"></i>
                                 </div>
-                                <div class="text-center sm:text-left">
-                                    <h1 class="text-3xl font-black text-emerald-800 dark:text-emerald-400 tracking-tight uppercase">Rapor Mutaba'ah</h1>
-                                    <p class="text-sm font-bold text-emerald-600 dark:text-emerald-500 tracking-widest">Misi Dakwah Papua Nugini</p>
+                                <div>
+                                    <h1 class="text-2xl sm:text-3xl font-black text-emerald-800 dark:text-emerald-400 tracking-tight uppercase">Rapor Mutaba'ah</h1>
+                                    <p class="text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-500 tracking-widest">Misi Dakwah Papua Nugini</p>
                                 </div>
                             </div>
-                            <div class="text-right bg-gray-50 dark:bg-gray-700/50 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600">
+                            <div class="text-right bg-gray-50 dark:bg-gray-700/50 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 hidden sm:block">
                                 <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase font-bold">Dicetak Pada</p>
-                                <p class="text-sm font-bold text-gray-800 dark:text-gray-200">${formatDateID(getLocalYYYYMMDD())}</p>
+                                <p class="text-xs font-bold text-gray-800 dark:text-gray-200">${formatDateID(getLocalYYYYMMDD())}</p>
                             </div>
                         </div>
 
                         <!-- IDENTITAS JAMAAH -->
-                        <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl p-6 border border-emerald-100 dark:border-emerald-800 mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl p-6 border border-emerald-100 dark:border-emerald-800 mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Nama Lengkap Jamaah</p>
                                 <h3 class="text-2xl font-black text-gray-900 dark:text-white">${jamaah.name}</h3>
@@ -429,7 +447,7 @@
                                 <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Program Halaqah</p>
                                 <h3 class="text-xl font-bold text-emerald-700 dark:text-emerald-400">${jamaah.program}</h3>
                             </div>
-                            <div class="md:col-span-2 pt-4 border-t border-emerald-200 dark:border-emerald-800 mt-2">
+                            <div class="sm:col-span-2 pt-4 border-t border-emerald-200 dark:border-emerald-800 mt-2">
                                 <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Target Bulanan / Capaian Besar</p>
                                 <p class="text-lg font-bold text-gray-800 dark:text-gray-200">${jamaah.target || "Tahap Persiapan"}</p>
                             </div>
@@ -449,7 +467,7 @@
 
                     <!-- TOMBOL AKSI (Di luar area cetak PDF) -->
                     <div class="bg-gray-100 dark:bg-gray-700 p-6 flex justify-center border-t border-gray-200 dark:border-gray-600">
-                        <button id="btn-download-${jamaah.id}" onclick="downloadPDF('${jamaah.id}', '${jamaah.name}')" class="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center text-lg">
+                        <button id="btn-download-${jamaah.id}" onclick="downloadPDF('${jamaah.id}', '${jamaah.name}')" class="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center text-lg w-full sm:w-auto justify-center">
                             <i class="fa-solid fa-file-pdf mr-3 text-xl"></i> Unduh Rapor Berupa PDF
                         </button>
                     </div>

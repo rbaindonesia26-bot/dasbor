@@ -85,7 +85,7 @@
         </div>
         
         <div class="absolute bottom-6 text-xs text-gray-400 font-light tracking-widest uppercase">
-            Halaqah Tracker Pro PNG v3.2
+            Halaqah Tracker Pro PNG v3.3
         </div>
     </div>
 
@@ -116,7 +116,7 @@
                 </div>
             </div>
             <!-- Ditambahkan flex-col dan items-center agar wrapper rapor terpusat sempurna -->
-            <div id="rapor-result-container" class="mt-8 space-y-6 flex flex-col items-center"></div>
+            <div id="rapor-result-container" class="mt-8 space-y-6 flex flex-col items-center w-full"></div>
         </main>
     </div>
 
@@ -127,7 +127,7 @@
                 <button onclick="switchView('landing')" class="text-gray-500 hover:text-emerald-600 dark:text-gray-400 dark:hover:text-emerald-400 transition" title="Ke Beranda">
                     <i class="fa-solid fa-house"></i>
                 </button>
-                <div class="w-px h-5 bg-gray-300 dark:bg-gray-600"></div>
+                <div class="w-px h-5 bg-bg-gray-300 dark:bg-gray-600"></div>
                 <h1 class="text-xl sm:text-2xl font-black tracking-tight text-emerald-600 dark:text-emerald-400">
                     <i class="fa-solid fa-chalkboard-user mr-1 text-lg"></i> Admin<span class="text-gray-800 dark:text-white font-light ml-1">Panel</span>
                 </h1>
@@ -323,35 +323,57 @@
 
         // --- GENERATE PDF MENGGUNAKAN HTML2PDF ---
         function downloadPDF(jamaahId, jamaahName) {
-            const element = document.getElementById(`rapor-pdf-content-${jamaahId}`);
+            const originalElement = document.getElementById(`rapor-pdf-content-${jamaahId}`);
             
-            // Tambahkan class agar ukuran container menjadi fixed width (800px)
-            element.classList.add('pdf-mode');
+            // Kloning elemen agar manipulasi tidak mengubah tampilan web pengguna
+            const clone = originalElement.cloneNode(true);
+            
+            // Buat kontainer khusus untuk proses cetak agar skala persis A4
+            const printContainer = document.createElement('div');
+            printContainer.style.position = 'absolute';
+            printContainer.style.left = '-9999px'; 
+            printContainer.style.top = '0';
+            printContainer.style.width = '800px'; 
+            printContainer.style.backgroundColor = '#ffffff'; 
+            printContainer.style.color = '#111827';
+            
+            printContainer.appendChild(clone);
+            document.body.appendChild(printContainer);
 
-            // Setup opsi html2pdf yang disempurnakan (TIDAK MENGERUT)
+            // Bersihkan kelas Dark Mode dari kloningan agar PDF selalu berlatar putih
+            clone.classList.remove('dark:bg-gray-800', 'dark:text-gray-100');
+            const elements = clone.getElementsByTagName('*');
+            for (let i = 0; i < elements.length; i++) {
+                if (elements[i].className && typeof elements[i].className === 'string') {
+                    elements[i].className = elements[i].className.replace(/dark:[a-zA-Z0-9\-:]+/g, '');
+                }
+            }
+
+            // Opsi HTML2PDF
             const opt = {
-                margin:       [10, 0, 10, 0], // Margin atas, kiri, bawah, kanan (dalam mm)
+                margin:       [15, 10, 15, 10], // Margin (mm)
                 filename:     `Rapor_Mutabaah_${jamaahName.replace(/\s+/g, '_')}.pdf`,
                 image:        { type: 'jpeg', quality: 1.0 },
                 html2canvas:  { 
                     scale: 2, 
                     useCORS: true,
-                    logging: false,
-                    windowWidth: 800, // PAKSA canvas merender elemen seolah dibuka di Desktop 800px
-                    width: 800        // PAKSA canvas width
+                    scrollY: 0,
+                    windowWidth: 800 // Memaksa kanvas merender resolusi desktop
                 },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                // Memastikan kelas .timeline-item tidak terpotong saat ganti halaman
+                pagebreak:    { mode: ['css', 'legacy'], avoid: '.timeline-item' }
             };
 
             // Animasi Tombol
             const btn = document.getElementById(`btn-download-${jamaahId}`);
             const originalText = btn.innerHTML;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Menyusun PDF...`;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Memproses PDF...`;
             btn.disabled = true;
 
-            // Proses Generate PDF
-            html2pdf().set(opt).from(element).save().then(() => {
-                element.classList.remove('pdf-mode'); // Kembalikan ke mode awal
+            // Proses Generate
+            html2pdf().set(opt).from(printContainer).save().then(() => {
+                document.body.removeChild(printContainer); // Hapus kloningan setelah selesai
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             });
@@ -367,35 +389,34 @@
             const container = document.getElementById('rapor-result-container');
             
             if(!query) {
-                container.innerHTML = `<div class="text-center w-full p-6 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl font-medium border border-red-200 dark:border-red-800">Silakan masukkan nama Anda terlebih dahulu.</div>`;
+                container.innerHTML = `<div class="text-center w-full max-w-2xl p-6 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl font-medium border border-red-200 dark:border-red-800">Silakan masukkan nama Anda terlebih dahulu.</div>`;
                 return;
             }
 
             const results = dataHalaqah.filter(j => j.name.toLowerCase().includes(query));
 
             if(results.length === 0) {
-                container.innerHTML = `<div class="text-center w-full p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700"><p class="text-gray-600 dark:text-gray-400 font-medium">Maaf, nama <strong class="text-gray-800 dark:text-gray-200">"${query}"</strong> tidak ditemukan.</p></div>`;
+                container.innerHTML = `<div class="text-center w-full max-w-2xl p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700"><p class="text-gray-600 dark:text-gray-400 font-medium">Maaf, nama <strong class="text-gray-800 dark:text-gray-200">"${query}"</strong> tidak ditemukan.</p></div>`;
                 return;
             }
 
             container.innerHTML = results.map(jamaah => {
-                // Generate Timeline Riwayat yang Diformat Secara Spesial untuk Rapor/PDF
+                // Generate Timeline Riwayat 
                 let historyHTML = '';
                 if(jamaah.history && jamaah.history.length > 0) {
-                    historyHTML = `<div class="mt-8 relative border-l-2 border-emerald-500 ml-4 pl-6 space-y-6">`;
+                    historyHTML = `<div class="mt-6 space-y-4">`;
                     
-                    jamaah.history.slice(0, 15).forEach((rec, idx) => { // Menampilkan max 15 riwayat terakhir di Rapor
+                    jamaah.history.slice(0, 15).forEach((rec) => { 
                         let qColor = "text-gray-700"; let mColor = "text-gray-700";
                         if(rec.quality === "Lancar") qColor = "text-emerald-600";
                         if(rec.quality === "Ulangi") qColor = "text-red-600";
                         if(rec.mutabaah === "Tuntas") mColor = "text-emerald-600";
                         if(rec.mutabaah === "Belum") mColor = "text-red-600";
 
-                        // Perhatikan kelas 'timeline-item' digunakan agar PDF tidak memotong elemen ini menjadi setengah halaman
+                        // Struktur Item Harian menggunakan flexbox (menghindari error render PDF pada margin negatif)
                         historyHTML += `
-                        <div class="relative timeline-item">
-                            <div class="absolute -left-[31px] top-1 w-4 h-4 bg-emerald-500 rounded-full ring-4 ring-white dark:ring-gray-900"></div>
-                            <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm">
+                        <div class="timeline-item flex flex-col md:flex-row gap-4 w-full border-l-4 border-emerald-500 pl-4 py-1">
+                            <div class="flex-grow bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm">
                                 <div class="flex justify-between items-center mb-2 border-b border-gray-200 dark:border-gray-600 pb-2">
                                     <h4 class="font-bold text-emerald-800 dark:text-emerald-400">${formatDateID(rec.date)}</h4>
                                     <span class="text-xs px-2 py-1 bg-gray-200 dark:bg-gray-600 rounded font-bold text-gray-700 dark:text-gray-200">${rec.attendance}</span>
@@ -415,52 +436,55 @@
                 }
 
                 return `
-                <div class="bg-white dark:bg-gray-800 w-full max-w-[800px] rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
+                <div class="bg-white dark:bg-gray-800 w-full max-w-3xl rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
                     
                     <!-- KONTEN YANG AKAN DI-CONVERT KE PDF -->
-                    <div id="rapor-pdf-content-${jamaah.id}" class="bg-white text-gray-900 p-6 sm:p-10 relative dark:bg-gray-800 dark:text-gray-100">
+                    <div id="rapor-pdf-content-${jamaah.id}" class="bg-white text-gray-900 p-8 sm:p-10 relative dark:bg-gray-800 dark:text-gray-100">
                         
                         <!-- HEADER PDF EKSKLUSIF (Rapor Resmi) -->
-                        <div class="border-b-4 border-emerald-600 pb-6 mb-8 flex justify-between items-center">
+                        <div class="border-b-4 border-emerald-600 pb-6 mb-8 flex flex-row justify-between items-center gap-4 timeline-item">
                             <div class="flex items-center gap-4">
-                                <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/50 rounded-full flex items-center justify-center border-2 border-emerald-500 text-emerald-600 dark:text-emerald-400">
+                                <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/50 rounded-full flex items-center justify-center border-2 border-emerald-500 text-emerald-600 dark:text-emerald-400 flex-shrink-0">
                                     <i class="fa-solid fa-book-quran text-3xl"></i>
                                 </div>
-                                <div>
-                                    <h1 class="text-2xl sm:text-3xl font-black text-emerald-800 dark:text-emerald-400 tracking-tight uppercase">Rapor Mutaba'ah</h1>
-                                    <p class="text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-500 tracking-widest">Misi Dakwah Papua Nugini</p>
+                                <div class="text-left">
+                                    <h1 class="text-2xl sm:text-3xl font-black text-emerald-800 dark:text-emerald-400 tracking-tight uppercase m-0 leading-tight">Rapor Mutaba'ah</h1>
+                                    <p class="text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-500 tracking-widest m-0 mt-1">Misi Dakwah Papua Nugini</p>
                                 </div>
                             </div>
-                            <div class="text-right bg-gray-50 dark:bg-gray-700/50 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 hidden sm:block">
-                                <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase font-bold">Dicetak Pada</p>
-                                <p class="text-xs font-bold text-gray-800 dark:text-gray-200">${formatDateID(getLocalYYYYMMDD())}</p>
+                            <div class="text-right bg-gray-50 dark:bg-gray-700/50 px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-600 hidden sm:block">
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase font-bold m-0 leading-none">Dicetak Pada</p>
+                                <p class="text-xs font-bold text-gray-800 dark:text-gray-200 m-0 mt-1 leading-none">${formatDateID(getLocalYYYYMMDD())}</p>
                             </div>
                         </div>
 
                         <!-- IDENTITAS JAMAAH -->
-                        <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl p-6 border border-emerald-100 dark:border-emerald-800 mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Nama Lengkap Jamaah</p>
-                                <h3 class="text-2xl font-black text-gray-900 dark:text-white">${jamaah.name}</h3>
+                        <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl p-6 border border-emerald-100 dark:border-emerald-800 mb-8 flex flex-wrap gap-6 timeline-item">
+                            <div class="flex-grow">
+                                <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1 m-0">Nama Lengkap Jamaah</p>
+                                <h3 class="text-2xl font-black text-gray-900 dark:text-white m-0">${jamaah.name}</h3>
                             </div>
-                            <div>
-                                <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Program Halaqah</p>
-                                <h3 class="text-xl font-bold text-emerald-700 dark:text-emerald-400">${jamaah.program}</h3>
+                            <div class="flex-grow">
+                                <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1 m-0">Program Halaqah</p>
+                                <h3 class="text-xl font-bold text-emerald-700 dark:text-emerald-400 m-0">${jamaah.program}</h3>
                             </div>
-                            <div class="sm:col-span-2 pt-4 border-t border-emerald-200 dark:border-emerald-800 mt-2">
-                                <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Target Bulanan / Capaian Besar</p>
-                                <p class="text-lg font-bold text-gray-800 dark:text-gray-200">${jamaah.target || "Tahap Persiapan"}</p>
+                            <div class="w-full pt-4 border-t border-emerald-200 dark:border-emerald-800 mt-2">
+                                <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1 m-0">Target Bulanan / Capaian Besar</p>
+                                <p class="text-lg font-bold text-gray-800 dark:text-gray-200 m-0">${jamaah.target || "Tahap Persiapan"}</p>
                             </div>
                         </div>
 
                         <!-- TIMELINE RIWAYAT UNTUK PDF -->
-                        <h4 class="text-lg font-black text-emerald-800 dark:text-emerald-400 mb-2 uppercase tracking-wider flex items-center"><i class="fa-solid fa-chart-line mr-2"></i> Rekam Jejak Harian</h4>
+                        <div class="timeline-item mb-4">
+                            <h4 class="text-lg font-black text-emerald-800 dark:text-emerald-400 uppercase tracking-wider flex items-center m-0"><i class="fa-solid fa-list-check mr-2"></i> Rincian Kegiatan Harian</h4>
+                        </div>
+                        
                         ${historyHTML}
                         
                         <!-- FOOTER PDF -->
-                        <div class="mt-12 pt-6 border-t-2 border-gray-200 dark:border-gray-700 text-center text-xs text-gray-400 dark:text-gray-500 font-medium">
-                            <p>Dokumen ini dicetak secara otomatis dari Sistem Halaqah Tracker PNG.</p>
-                            <p>Semoga Allah memberikan istiqamah dalam mempelajari Al-Qur'an.</p>
+                        <div class="mt-12 pt-6 border-t-2 border-gray-200 dark:border-gray-700 text-center text-xs text-gray-400 dark:text-gray-500 font-medium timeline-item">
+                            <p class="m-0 mb-1">Dokumen ini dicetak secara otomatis dari Sistem Halaqah Tracker PNG.</p>
+                            <p class="m-0">Semoga Allah memberikan istiqamah dalam mempelajari Al-Qur'an.</p>
                         </div>
                     </div>
                     <!-- END OF KONTEN PDF -->

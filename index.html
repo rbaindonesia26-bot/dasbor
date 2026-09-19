@@ -48,12 +48,12 @@
                 Halaqah<span class="text-emerald-400 font-light">PNG</span>
             </h1>
             <p class="text-gray-300 text-sm sm:text-lg mb-10 max-w-lg font-light tracking-wide">
-                Sistem Mutaba'ah Ngaji & Evaluasi Pembelajaran Al-Qur'an untuk Misi Dakwah Papua Nugini
+                Sistem Mutaba'ah Ngaji & Evaluasi Harian Pembelajaran Al-Qur'an untuk Misi Dakwah Papua Nugini
             </p>
             
             <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto px-6">
                 <button onclick="switchView('rapor')" class="group relative px-8 py-3.5 bg-white text-emerald-900 font-bold rounded-full shadow-lg hover:bg-gray-100 transition-all flex items-center justify-center">
-                    <i class="fa-solid fa-graduation-cap mr-2 group-hover:scale-110 transition-transform"></i> Cek Rapor Jamaah
+                    <i class="fa-solid fa-graduation-cap mr-2 group-hover:scale-110 transition-transform"></i> Cek Rapor & Riwayat Harian
                 </button>
                 <button onclick="switchView('admin')" class="px-8 py-3.5 border-2 border-emerald-400/30 text-white font-bold rounded-full hover:bg-emerald-800/50 transition-all flex items-center justify-center glass-panel">
                     <i class="fa-solid fa-chalkboard-user mr-2"></i> Masuk Pengajar
@@ -62,7 +62,7 @@
         </div>
         
         <div class="absolute bottom-6 text-xs text-gray-400 font-light tracking-widest uppercase">
-            Halaqah Tracker Pro PNG v2.1
+            Halaqah Tracker Pro PNG v3.0
         </div>
     </div>
 
@@ -76,19 +76,19 @@
             <div class="w-20"></div>
         </header>
 
-        <main class="flex-grow w-full max-w-3xl mx-auto p-4 sm:p-6 mt-4">
+        <main class="flex-grow w-full max-w-4xl mx-auto p-4 sm:p-6 mt-4">
             <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 text-center relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
-                <h2 class="text-2xl font-black text-gray-800 dark:text-white mb-2">Cari Hasil Evaluasi</h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Masukkan nama lengkap Anda sesuai yang didaftarkan pengajar</p>
+                <h2 class="text-2xl font-black text-gray-800 dark:text-white mb-2">Cari Hasil Evaluasi Harian</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Masukkan nama lengkap Anda untuk memantau perkembangan ngaji Anda</p>
                 
-                <div class="flex flex-col sm:flex-row gap-3">
+                <div class="flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto">
                     <div class="relative flex-grow">
                         <i class="fa-solid fa-search absolute left-4 top-4 text-gray-400"></i>
                         <input type="text" id="search-input" placeholder="Ketik nama jamaah..." class="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white focus:ring-0 focus:border-emerald-500 outline-none font-medium transition" onkeypress="handleSearch(event)">
                     </div>
                     <button onclick="searchJamaah()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3.5 rounded-xl font-bold transition shadow-md whitespace-nowrap">
-                        Cari Rapor
+                        Cari Riwayat
                     </button>
                 </div>
             </div>
@@ -163,24 +163,39 @@
         </main>
     </div>
 
-    <!-- MODAL UPDATE PROGRES MUTABAAH -->
+    <!-- MODAL UPDATE PROGRES MUTABAAH DENGAN RIWAYAT HARIAN -->
     <div id="update-modal" class="fixed inset-0 bg-black/60 z-[100] hidden flex justify-center items-center backdrop-blur-sm p-4 opacity-0 transition-opacity duration-300">
-        <div class="bg-white dark:bg-gray-800 w-full max-w-lg rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 max-h-[90vh] overflow-y-auto" id="update-modal-content">
-            <div class="bg-gradient-to-r from-emerald-600 to-teal-600 p-4 sm:p-5 rounded-t-2xl flex justify-between items-center sticky top-0 z-10">
+        <div class="bg-white dark:bg-gray-800 w-full max-w-lg rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 max-h-[90vh] flex flex-col" id="update-modal-content">
+            <!-- Header Modal -->
+            <div class="bg-gradient-to-r from-emerald-600 to-teal-600 p-4 sm:p-5 rounded-t-2xl flex justify-between items-center shrink-0">
                 <h2 class="text-white font-bold text-lg flex items-center">
-                    <i class="fa-solid fa-list-check mr-2"></i> Form Mutaba'ah Ngaji
+                    <i class="fa-solid fa-calendar-plus mr-2"></i> Input Mutaba'ah Harian
                 </h2>
                 <button onclick="closeUpdateModal()" class="text-white hover:text-red-200 transition p-1">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
             
-            <div class="p-5 sm:p-6 space-y-5">
+            <!-- Body Modal (Scrollable) -->
+            <div class="p-5 sm:p-6 overflow-y-auto space-y-5">
                 <input type="hidden" id="edit-id">
-                <div class="bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-xl border border-emerald-100 dark:border-emerald-800">
-                    <label class="block text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1">Nama Jamaah</label>
-                    <p id="edit-name" class="text-lg font-black text-gray-900 dark:text-white"></p>
-                    <p id="edit-program" class="text-xs font-bold text-gray-600 dark:text-gray-400 mt-1"></p>
+                
+                <!-- Info Jamaah -->
+                <div class="flex justify-between items-end bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-xl border border-emerald-100 dark:border-emerald-800">
+                    <div>
+                        <label class="block text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1">Nama Jamaah</label>
+                        <p id="edit-name" class="text-lg font-black text-gray-900 dark:text-white"></p>
+                        <p id="edit-program" class="text-xs font-bold text-gray-600 dark:text-gray-400 mt-1"></p>
+                    </div>
+                </div>
+
+                <!-- Input Tanggal Kalender -->
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-5">
+                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                        <i class="fa-regular fa-calendar-days mr-1"></i> Pilih Tanggal Pelaksanaan
+                    </label>
+                    <input type="date" id="edit-date" class="w-full p-3 border-2 border-emerald-200 dark:border-emerald-800 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm font-bold text-emerald-700 dark:text-emerald-300" onchange="loadDataForDate()">
+                    <p class="text-[10px] text-gray-500 mt-1 italic">*Ubah tanggal jika ingin memasukkan data hari sebelumnya.</p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
@@ -204,35 +219,41 @@
                     </div>
                 </div>
 
-                <div class="space-y-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+                <div class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Target Bulanan</label>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Target Bulanan / Besar</label>
                         <input type="text" id="edit-target" placeholder="Cth: Lulus Jilid 4 / Hafal Juz 30" class="w-full p-3 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Progres Ngaji Harian</label>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Progres Ngaji Harian Ini</label>
                         <input type="text" id="edit-progress" placeholder="Cth: Jilid 4 Hal 12-15 / Surah An-Naba 1-10" class="w-full p-3 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Amalan Mandiri (Mutaba'ah)</label>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Amalan Mandiri (Di Rumah)</label>
                         <select id="edit-mutabaah" class="w-full p-2.5 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white outline-none text-sm font-medium cursor-pointer focus:border-emerald-500">
                             <option value="Tuntas">⭐ Tuntas 100%</option>
                             <option value="Sebagian">⚠️ Selesai Sebagian</option>
                             <option value="Belum">⏳ Belum Dilaksanakan</option>
                         </select>
                     </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Catatan Khusus Pengajar</label>
+                        <textarea id="edit-notes" rows="2" placeholder="Catatan perbaikan, motivasi, dsb." class="w-full p-3 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm resize-none"></textarea>
+                    </div>
                 </div>
 
-                <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
-                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Catatan Khusus (Tajwid/Makhraj)</label>
-                    <textarea id="edit-notes" rows="2" placeholder="Cth: Perhatikan dengung (Ghunnah) dan panjang pendeknya." class="w-full p-3 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm resize-none"></textarea>
+                <!-- Preview Riwayat Harian (Mini) -->
+                <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3"><i class="fa-solid fa-clock-rotate-left mr-1"></i> Preview 3 Riwayat Terakhir</h3>
+                    <div id="modal-history-list" class="space-y-2"></div>
                 </div>
             </div>
             
-            <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-b-2xl flex justify-end gap-3 border-t border-gray-200 dark:border-gray-600 sticky bottom-0">
+            <!-- Footer Modal -->
+            <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-b-2xl flex justify-end gap-3 border-t border-gray-200 dark:border-gray-600 shrink-0">
                 <button onclick="closeUpdateModal()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-800 dark:text-white rounded-lg font-bold text-sm transition">Batal</button>
                 <button onclick="saveProgress()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-sm transition flex items-center shadow-md">
-                    <i class="fa-solid fa-save mr-2"></i> Simpan Mutaba'ah
+                    <i class="fa-solid fa-save mr-2"></i> Simpan Harian
                 </button>
             </div>
         </div>
@@ -255,12 +276,28 @@
         // --- MANAJEMEN DATA ---
         let dataHalaqah = JSON.parse(localStorage.getItem('halaqah_png_pro')) || [];
 
+        // Inisialisasi format baru untuk data lama (Backward Compatibility)
+        dataHalaqah.forEach(j => {
+            if(!j.history) j.history = [];
+        });
+
         function saveToLocal() {
             localStorage.setItem('halaqah_png_pro', JSON.stringify(dataHalaqah));
             renderList();
         }
 
-        // --- LOGIKA RAPOR JAMAAH ---
+        // Mendapatkan tanggal lokal berformat YYYY-MM-DD
+        function getLocalYYYYMMDD() {
+            const tzoffset = (new Date()).getTimezoneOffset() * 60000;
+            return (new Date(Date.now() - tzoffset)).toISOString().split('T')[0];
+        }
+
+        function formatDateID(dateString) {
+            const options = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+
+        // --- LOGIKA RAPOR JAMAAH (TIMELINE RIWAYAT) ---
         function handleSearch(e) {
             if(e.key === 'Enter') searchJamaah();
         }
@@ -270,82 +307,61 @@
             const container = document.getElementById('rapor-result-container');
             
             if(!query) {
-                container.innerHTML = `<div class="text-center p-6 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl font-medium border border-red-200 dark:border-red-800"><i class="fa-solid fa-circle-exclamation mr-2"></i> Silakan masukkan nama Anda terlebih dahulu.</div>`;
+                container.innerHTML = `<div class="text-center p-6 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl font-medium border border-red-200 dark:border-red-800">Silakan masukkan nama Anda terlebih dahulu.</div>`;
                 return;
             }
 
             const results = dataHalaqah.filter(j => j.name.toLowerCase().includes(query));
 
             if(results.length === 0) {
-                container.innerHTML = `<div class="text-center p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700"><i class="fa-solid fa-file-circle-xmark text-4xl text-gray-300 dark:text-gray-600 mb-4 block"></i><p class="text-gray-600 dark:text-gray-400 font-medium">Maaf, nama <strong class="text-gray-800 dark:text-gray-200">"${query}"</strong> tidak ditemukan dalam sistem.</p></div>`;
+                container.innerHTML = `<div class="text-center p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700"><p class="text-gray-600 dark:text-gray-400 font-medium">Maaf, nama <strong class="text-gray-800 dark:text-gray-200">"${query}"</strong> tidak ditemukan.</p></div>`;
                 return;
             }
 
             container.innerHTML = results.map(jamaah => {
-                let qColor = "text-gray-600"; let qBg = "bg-gray-100"; let qIcon = "fa-circle-question";
-                if(jamaah.quality === "Lancar") { qColor = "text-emerald-600 dark:text-emerald-400"; qBg = "bg-emerald-50 dark:bg-emerald-900/20"; qIcon = "fa-circle-check"; }
-                if(jamaah.quality === "Kurang") { qColor = "text-yellow-600 dark:text-yellow-400"; qBg = "bg-yellow-50 dark:bg-yellow-900/20"; qIcon = "fa-circle-minus"; }
-                if(jamaah.quality === "Ulangi") { qColor = "text-red-600 dark:text-red-400"; qBg = "bg-red-50 dark:bg-red-900/20"; qIcon = "fa-circle-xmark"; }
+                // Generate Timeline Riwayat
+                let historyHTML = '';
+                if(jamaah.history && jamaah.history.length > 0) {
+                    historyHTML = `<div class="mt-8 relative border-l-2 border-emerald-200 dark:border-emerald-800 ml-3 pl-5 space-y-6">`;
+                    
+                    jamaah.history.slice(0, 10).forEach((rec, idx) => { // Tampilkan max 10 riwayat
+                        let qColor = "text-gray-500"; let mColor = "text-gray-500";
+                        if(rec.quality === "Lancar") qColor = "text-emerald-500";
+                        if(rec.quality === "Ulangi") qColor = "text-red-500";
+                        if(rec.mutabaah === "Tuntas") mColor = "text-emerald-500";
+                        if(rec.mutabaah === "Belum") mColor = "text-red-500";
 
-                let mColor = "text-gray-500";
-                if(jamaah.mutabaah === "Tuntas") mColor = "text-emerald-500 font-bold";
-                if(jamaah.mutabaah === "Sebagian") mColor = "text-yellow-500 font-bold";
-                if(jamaah.mutabaah === "Belum") mColor = "text-red-500 font-bold";
+                        historyHTML += `
+                        <div class="relative">
+                            <div class="absolute -left-[27px] top-1 w-3 h-3 bg-emerald-500 rounded-full ring-4 ring-white dark:ring-gray-800"></div>
+                            <div class="bg-gray-50 dark:bg-gray-700/30 p-4 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="font-bold text-gray-800 dark:text-gray-200">${formatDateID(rec.date)}</h4>
+                                    <span class="text-xs px-2 py-1 bg-gray-200 dark:bg-gray-600 rounded font-bold">${rec.attendance}</span>
+                                </div>
+                                <p class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2"><i class="fa-solid fa-book-open text-emerald-500 w-5"></i> ${rec.progress}</p>
+                                <div class="flex flex-wrap gap-3 text-[11px] font-bold uppercase tracking-wider">
+                                    <span class="${qColor}"><i class="fa-solid fa-microphone w-3"></i> ${rec.quality}</span>
+                                    <span class="${mColor}"><i class="fa-solid fa-house-chimney w-3"></i> Mutaba'ah: ${rec.mutabaah}</span>
+                                </div>
+                                ${rec.notes ? `<p class="mt-2 text-xs italic text-gray-500 bg-white dark:bg-gray-800 p-2 rounded border border-gray-200 dark:border-gray-600">"${rec.notes}"</p>` : ''}
+                            </div>
+                        </div>`;
+                    });
+                    historyHTML += `</div>`;
+                } else {
+                    historyHTML = `<div class="mt-4 p-4 text-center text-sm text-gray-500 italic bg-gray-50 dark:bg-gray-700/50 rounded-xl">Belum ada riwayat harian yang dicatat.</div>`;
+                }
 
                 return `
-                <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-6 animate-[fadeIn_0.5s_ease-out]">
-                    <div class="bg-emerald-600 dark:bg-emerald-800 p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <div class="flex items-center gap-4">
-                            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30 text-white">
-                                <i class="fa-solid fa-user-graduate text-3xl"></i>
-                            </div>
-                            <div class="text-left">
-                                <h3 class="text-2xl font-black text-white">${jamaah.name}</h3>
-                                <p class="text-emerald-100 font-medium opacity-90"><i class="fa-solid fa-book-open mr-1"></i> Program: ${jamaah.program}</p>
-                            </div>
-                        </div>
-                        <div class="bg-white/20 px-4 py-2 rounded-xl backdrop-blur-sm border border-white/30 text-center">
-                            <p class="text-[10px] text-emerald-100 uppercase tracking-widest font-bold">Update Terakhir</p>
-                            <p class="text-white font-bold">${jamaah.lastUpdate}</p>
-                        </div>
+                <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
+                    <div class="bg-emerald-600 p-6 text-white text-center sm:text-left">
+                        <h3 class="text-3xl font-black">${jamaah.name}</h3>
+                        <p class="text-emerald-100 font-medium">Program: ${jamaah.program}</p>
                     </div>
-                    
-                    <div class="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-6">
-                            <div>
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Target Bulanan</p>
-                                <p class="text-lg font-bold text-gray-800 dark:text-gray-200">${jamaah.target || "-"}</p>
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Progres Harian</p>
-                                <p class="text-xl font-black text-gray-800 dark:text-white">${jamaah.progress || "-"}</p>
-                            </div>
-                            <div class="p-4 rounded-2xl ${qBg} border border-opacity-50">
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Kualitas Bacaan</p>
-                                <p class="text-lg font-bold ${qColor} flex items-center">
-                                    <i class="fa-solid ${qIcon} mr-2"></i> ${jamaah.quality || "Belum Dinilai"}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="space-y-6">
-                            <div class="grid grid-cols-2 gap-4 border-b border-gray-100 dark:border-gray-700 pb-4">
-                                <div>
-                                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Kehadiran</p>
-                                    <p class="text-lg font-bold text-gray-800 dark:text-gray-200">${jamaah.attendance}</p>
-                                </div>
-                                <div>
-                                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Amalan Mandiri</p>
-                                    <p class="text-lg ${mColor}">${jamaah.mutabaah || "-"}</p>
-                                </div>
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Catatan Pengajar</p>
-                                <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl border-l-4 border-emerald-500 italic text-gray-600 dark:text-gray-300 min-h-[4rem]">
-                                    ${jamaah.notes ? `"${jamaah.notes}"` : "Belum ada catatan khusus pada sesi ini."}
-                                </div>
-                            </div>
-                        </div>
+                    <div class="p-6 md:p-8">
+                        <h4 class="text-lg font-bold text-gray-800 dark:text-white mb-2 border-b border-gray-200 dark:border-gray-700 pb-2">Timeline Perkembangan Harian</h4>
+                        ${historyHTML}
                     </div>
                 </div>
                 `;
@@ -357,21 +373,21 @@
             const nameInput = document.getElementById('jamaah-name');
             const programInput = document.getElementById('jamaah-program');
             const name = nameInput.value.trim();
-            const program = programInput.value;
 
             if (!name) return alert("Nama jamaah tidak boleh kosong!");
 
             const newJamaah = {
                 id: Date.now().toString(),
                 name: name,
-                program: program,
+                program: programInput.value,
                 target: "Persiapan",
                 progress: "Materi Dasar",
                 mutabaah: "Belum",
                 quality: "Belum Dinilai",
                 attendance: "Hadir",
                 notes: "",
-                lastUpdate: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+                lastUpdate: getLocalYYYYMMDD(),
+                history: []
             };
 
             dataHalaqah.push(newJamaah);
@@ -380,26 +396,25 @@
         }
 
         function deleteJamaah(id) {
-            if (confirm("Data jamaah beserta riwayatnya akan dihapus. Lanjutkan?")) {
+            if (confirm("Hapus jamaah beserta seluruh riwayat hariannya?")) {
                 dataHalaqah = dataHalaqah.filter(j => j.id !== id);
                 saveToLocal();
             }
         }
 
+        // --- SISTEM UPDATE MUTABAAH BERDASARKAN KALENDER ---
         function openUpdateModal(id) {
             const jamaah = dataHalaqah.find(j => j.id === id);
             if (!jamaah) return;
+            
             document.getElementById('edit-id').value = jamaah.id;
             document.getElementById('edit-name').innerText = jamaah.name;
             document.getElementById('edit-program').innerText = "Program: " + jamaah.program;
             
-            document.getElementById('edit-target').value = jamaah.target || "";
-            document.getElementById('edit-progress').value = jamaah.progress || "";
-            document.getElementById('edit-mutabaah').value = jamaah.mutabaah || "Belum";
+            // Set Kalender ke hari ini
+            document.getElementById('edit-date').value = getLocalYYYYMMDD();
             
-            document.getElementById('edit-quality').value = jamaah.quality || "Belum Dinilai";
-            document.getElementById('edit-attendance').value = jamaah.attendance || "Hadir";
-            document.getElementById('edit-notes').value = jamaah.notes || "";
+            loadDataForDate(); // Muat data sesuai tanggal (bawaannya hari ini)
 
             const modal = document.getElementById('update-modal');
             modal.classList.remove('hidden');
@@ -407,6 +422,55 @@
                 modal.classList.remove('opacity-0'); 
                 document.getElementById('update-modal-content').classList.remove('scale-95'); 
             }, 10);
+        }
+
+        // Fungsi ini dipanggil setiap kali kalender diubah
+        function loadDataForDate() {
+            const id = document.getElementById('edit-id').value;
+            const jamaah = dataHalaqah.find(j => j.id === id);
+            const selectedDate = document.getElementById('edit-date').value;
+            
+            // Cek apakah di tanggal ini sudah ada histori?
+            const existingRecord = jamaah.history ? jamaah.history.find(h => h.date === selectedDate) : null;
+
+            if (existingRecord) {
+                // Tarik data histori tanggal tersebut
+                document.getElementById('edit-target').value = existingRecord.target || "";
+                document.getElementById('edit-progress').value = existingRecord.progress || "";
+                document.getElementById('edit-mutabaah').value = existingRecord.mutabaah || "Belum";
+                document.getElementById('edit-quality').value = existingRecord.quality || "Belum Dinilai";
+                document.getElementById('edit-attendance').value = existingRecord.attendance || "Hadir";
+                document.getElementById('edit-notes').value = existingRecord.notes || "";
+            } else {
+                // Jika belum ada, gunakan data terakhir yang diketahui sebagai default (mempermudah lanjut ngaji)
+                document.getElementById('edit-target').value = jamaah.target || "";
+                document.getElementById('edit-progress').value = jamaah.progress || "";
+                document.getElementById('edit-mutabaah').value = "Belum"; // default reset harian
+                document.getElementById('edit-quality').value = "Belum Dinilai";
+                document.getElementById('edit-attendance').value = "Hadir";
+                document.getElementById('edit-notes').value = "";
+            }
+
+            // Render Preview Riwayat (Tampilkan max 3 record sebelumnya)
+            renderMiniHistory(jamaah);
+        }
+
+        function renderMiniHistory(jamaah) {
+            const listEl = document.getElementById('modal-history-list');
+            if(!jamaah.history || jamaah.history.length === 0) {
+                listEl.innerHTML = `<p class="text-[10px] text-gray-400 italic">Belum ada riwayat sebelumnya.</p>`;
+                return;
+            }
+            
+            // Ambil 3 data teratas (karena sudah di-sort DESC saat save)
+            let hHTML = '';
+            jamaah.history.slice(0,3).forEach(rec => {
+                hHTML += `<div class="bg-gray-100 dark:bg-gray-700/50 p-2 rounded text-[11px] flex justify-between">
+                    <span class="font-bold text-gray-700 dark:text-gray-300">${rec.date}</span>
+                    <span class="truncate ml-2 text-gray-500">${rec.progress}</span>
+                </div>`;
+            });
+            listEl.innerHTML = hHTML;
         }
 
         function closeUpdateModal() {
@@ -421,13 +485,39 @@
             const jamaah = dataHalaqah.find(j => j.id === id);
             
             if (jamaah) {
-                jamaah.target = document.getElementById('edit-target').value.trim() || "-";
-                jamaah.progress = document.getElementById('edit-progress').value.trim() || "-";
-                jamaah.mutabaah = document.getElementById('edit-mutabaah').value;
-                jamaah.quality = document.getElementById('edit-quality').value;
-                jamaah.attendance = document.getElementById('edit-attendance').value;
-                jamaah.notes = document.getElementById('edit-notes').value.trim();
-                jamaah.lastUpdate = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                if(!jamaah.history) jamaah.history = [];
+                
+                const selectedDate = document.getElementById('edit-date').value;
+                const newRecord = {
+                    date: selectedDate,
+                    target: document.getElementById('edit-target').value.trim() || "-",
+                    progress: document.getElementById('edit-progress').value.trim() || "-",
+                    mutabaah: document.getElementById('edit-mutabaah').value,
+                    quality: document.getElementById('edit-quality').value,
+                    attendance: document.getElementById('edit-attendance').value,
+                    notes: document.getElementById('edit-notes').value.trim()
+                };
+
+                // Cek & Timpa jika tanggal yang sama diedit, jika tidak push baru
+                const existingIndex = jamaah.history.findIndex(h => h.date === selectedDate);
+                if(existingIndex > -1) {
+                    jamaah.history[existingIndex] = newRecord;
+                } else {
+                    jamaah.history.push(newRecord);
+                }
+
+                // Urutkan histori dari tanggal terbaru ke terlama (Descending)
+                jamaah.history.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                // Update info utama jamaah dengan record terbaru (index 0)
+                const latest = jamaah.history[0];
+                jamaah.target = latest.target;
+                jamaah.progress = latest.progress;
+                jamaah.mutabaah = latest.mutabaah;
+                jamaah.quality = latest.quality;
+                jamaah.attendance = latest.attendance;
+                jamaah.notes = latest.notes;
+                jamaah.lastUpdate = latest.date;
                 
                 saveToLocal();
                 closeUpdateModal();
@@ -483,19 +573,19 @@
                         </div>
                         <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-lg border border-gray-100 dark:border-gray-600 mb-3">
                             <div class="flex justify-between items-center mb-1">
-                                <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase font-bold">Progres Harian</p>
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase font-bold">Progres Terakhir</p>
                                 <span class="text-xs" title="Kehadiran Terakhir">${attIcon}</span>
                             </div>
                             <p class="text-sm font-bold text-gray-800 dark:text-gray-200">${jamaah.progress || "-"}</p>
                             ${jamaah.notes ? `
                             <div class="mt-2 pt-2 border-t border-dashed border-gray-200 dark:border-gray-600">
-                                <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase font-bold mb-0.5"><i class="fa-solid fa-thumbtack mr-1"></i> Catatan</p>
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase font-bold mb-0.5"><i class="fa-solid fa-thumbtack mr-1"></i> Catatan Terakhir</p>
                                 <p class="text-xs text-gray-600 dark:text-gray-300 italic line-clamp-2">${jamaah.notes}</p>
                             </div>` : ''}
                         </div>
                     </div>
                     <div class="flex justify-between items-center mt-auto pl-2 pt-2">
-                        <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500"><i class="fa-regular fa-clock mr-1"></i> ${jamaah.lastUpdate}</span>
+                        <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500"><i class="fa-regular fa-calendar mr-1"></i> ${jamaah.lastUpdate || '-'}</span>
                         <button onclick="openUpdateModal('${jamaah.id}')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:hover:bg-emerald-800 dark:text-emerald-400 px-4 py-2 rounded-lg text-xs font-bold transition border border-emerald-200 dark:border-emerald-700 shadow-sm flex items-center">
                             <i class="fa-solid fa-list-check mr-1.5"></i> Mutaba'ah
                         </button>
@@ -513,7 +603,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `HalaqahPNG_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `HalaqahPNG_Backup_${getLocalYYYYMMDD()}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);

@@ -3,92 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Halaqah Tracker Pro - PNG Mission</title>
+    <title>Halaqah Tracker - Misi Papua</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: { extend: { colors: { primary: '#10b981' } } }
+            theme: { 
+                extend: { 
+                    fontFamily: { sans: ['Poppins', 'sans-serif'] },
+                    colors: { primary: '#059669' } 
+                } 
+            }
         }
     </script>
     <style>
+        body { font-family: 'Poppins', sans-serif; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        
+        /* Animasi Landing Page */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-300 min-h-screen flex flex-col font-sans">
+<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-300 min-h-screen flex flex-col overflow-x-hidden">
 
-    <!-- Header -->
-    <header class="bg-white dark:bg-gray-800 shadow-sm p-4 sticky top-0 z-20 flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
-        <h1 class="text-xl sm:text-2xl font-black tracking-tight text-emerald-600 dark:text-emerald-400">
-            <i class="fa-solid fa-book-open-reader mr-2"></i>Halaqah<span class="text-gray-800 dark:text-white font-light ml-1">Pro</span>
-        </h1>
-        <div class="flex items-center gap-2 sm:gap-3">
-            <button onclick="exportJSON()" class="text-xs bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300 px-3 py-1.5 rounded-full font-bold shadow-sm hover:bg-emerald-200 transition flex items-center" title="Cadangkan Data">
-                <i class="fa-solid fa-download sm:mr-1"></i> <span class="hidden sm:inline">Backup</span>
-            </button>
-            <label class="cursor-pointer text-xs bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300 px-3 py-1.5 rounded-full font-bold shadow-sm hover:bg-indigo-200 transition flex items-center" title="Pulihkan JSON">
-                <i class="fa-solid fa-upload sm:mr-1"></i> <span class="hidden sm:inline">Pulihkan</span>
-                <input type="file" id="import-json" class="hidden" accept=".json" onchange="importJSON(event)">
-            </label>
-            <div class="w-px h-5 bg-gray-300 dark:bg-gray-600 mx-1"></div>
-            <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition">
-                <i id="theme-icon" class="fa-solid fa-moon"></i>
-            </button>
-        </div>
-    </header>
-
-    <main class="flex-grow w-full max-w-5xl mx-auto p-4 sm:p-6 flex flex-col gap-6">
+    <!-- ================= LANDING PAGE ================= -->
+    <div id="view-landing" class="min-h-screen flex flex-col items-center justify-center relative bg-gradient-to-br from-emerald-900 via-teal-900 to-gray-900 text-white p-4">
+        <!-- Dekorasi Background Latar -->
+        <div class="absolute top-10 left-10 w-72 h-72 bg-emerald-500 rounded-full mix-blend-multiply filter blur-[100px] opacity-40"></div>
+        <div class="absolute bottom-10 right-10 w-72 h-72 bg-teal-500 rounded-full mix-blend-multiply filter blur-[100px] opacity-40"></div>
         
-        <!-- Panel Tambah Jamaah -->
-        <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <h2 class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4"><i class="fa-solid fa-user-plus mr-1"></i> Registrasi Jamaah Baru</h2>
-            <div class="flex flex-col sm:flex-row gap-3">
-                <input type="text" id="jamaah-name" placeholder="Nama Lengkap Jamaah" class="flex-grow p-3 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm font-medium">
-                <select id="jamaah-program" class="p-3 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm cursor-pointer font-medium w-full sm:w-auto">
-                    <option value="Yanbua">Metode Yanbua</option>
-                    <option value="Qiraati">Metode Qiraati</option>
-                    <option value="Tahfiz 30 Juz">Tahfiz 30 Juz</option>
-                    <option value="Tilawah & Tahsin">Tilawah & Tahsin</option>
-                </select>
-                <button onclick="addJamaah()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg shadow font-bold transition text-sm whitespace-nowrap flex items-center justify-center">
-                    <i class="fa-solid fa-check mr-2"></i> Daftarkan
+        <div class="z-10 flex flex-col items-center text-center max-w-3xl animate-[fadeIn_1s_ease-in-out]">
+            <div class="w-20 h-20 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md mb-6 border border-white/20 shadow-2xl">
+                <i class="fa-solid fa-quran text-4xl text-emerald-400"></i>
+            </div>
+            
+            <h1 class="text-4xl sm:text-6xl font-black tracking-tight mb-2">
+                Halaqah<span class="text-emerald-400 font-light">Papua</span>
+            </h1>
+            <p class="text-gray-300 text-sm sm:text-lg mb-10 max-w-lg font-light tracking-wide">
+                Sistem Pemantauan Progres Ngaji & Evaluasi Pembelajaran Al-Qur'an untuk Misi Dakwah Papua
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto px-6">
+                <button onclick="switchView('rapor')" class="group relative px-8 py-3.5 bg-white text-emerald-900 font-bold rounded-full shadow-lg hover:bg-gray-100 transition-all flex items-center justify-center">
+                    <i class="fa-solid fa-graduation-cap mr-2 group-hover:scale-110 transition-transform"></i> Cek Rapor Jamaah
+                </button>
+                <button onclick="switchView('admin')" class="px-8 py-3.5 border-2 border-emerald-400/30 text-white font-bold rounded-full hover:bg-emerald-800/50 transition-all flex items-center justify-center glass-panel">
+                    <i class="fa-solid fa-chalkboard-user mr-2"></i> Masuk Pengajar
                 </button>
             </div>
         </div>
+        
+        <div class="absolute bottom-6 text-xs text-gray-400 font-light tracking-widest uppercase">
+            Halaqah Tracker Pro v2.0
+        </div>
+    </div>
 
-        <!-- Filter & Statistik Kontrol -->
-        <div class="flex flex-col sm:flex-row justify-between items-center bg-gray-100 dark:bg-gray-800/50 p-2 rounded-xl gap-4 border border-gray-200 dark:border-gray-700">
-            <div class="flex items-center gap-4 px-3">
-                <div class="text-center">
-                    <p class="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Total Jamaah</p>
-                    <p class="text-xl font-black text-emerald-600 dark:text-emerald-400 leading-none mt-1" id="stat-total">0</p>
+    <!-- ================= HALAMAN CEK RAPOR (JAMAAH) ================= -->
+    <div id="view-rapor" class="hidden min-h-screen flex-col">
+        <header class="bg-emerald-700 text-white shadow-md p-4 sticky top-0 z-20 flex justify-between items-center">
+            <button onclick="switchView('landing')" class="hover:bg-emerald-600 p-2 rounded-lg transition flex items-center text-sm font-bold">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Kembali
+            </button>
+            <h1 class="text-xl font-black tracking-tight">Rapor<span class="font-light">Jamaah</span></h1>
+            <div class="w-20"></div> <!-- Spacer -->
+        </header>
+
+        <main class="flex-grow w-full max-w-3xl mx-auto p-4 sm:p-6 mt-4">
+            <!-- Pencarian -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+                <h2 class="text-2xl font-black text-gray-800 dark:text-white mb-2">Cari Hasil Evaluasi</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Masukkan nama lengkap Anda sesuai yang didaftarkan pengajar</p>
+                
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <div class="relative flex-grow">
+                        <i class="fa-solid fa-search absolute left-4 top-4 text-gray-400"></i>
+                        <input type="text" id="search-input" placeholder="Ketik nama jamaah..." class="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white focus:ring-0 focus:border-emerald-500 outline-none font-medium transition" onkeypress="handleSearch(event)">
+                    </div>
+                    <button onclick="searchJamaah()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3.5 rounded-xl font-bold transition shadow-md whitespace-nowrap">
+                        Cari Rapor
+                    </button>
                 </div>
             </div>
-            <div class="w-full sm:w-auto flex-grow flex justify-end">
-                <select id="filter-program" onchange="renderList()" class="w-full sm:w-auto p-2.5 bg-white border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none text-xs font-bold cursor-pointer shadow-sm">
-                    <option value="Semua">Tampilkan Semua Kelas</option>
-                    <option value="Yanbua">Kelas Yanbua</option>
-                    <option value="Qiraati">Kelas Qiraati</option>
-                    <option value="Tahfiz 30 Juz">Kelas Tahfiz</option>
-                    <option value="Tilawah & Tahsin">Kelas Tilawah</option>
-                </select>
+
+            <!-- Hasil Rapor Container -->
+            <div id="rapor-result-container" class="mt-8"></div>
+        </main>
+    </div>
+
+    <!-- ================= DASBOR PENGAJAR (ADMIN) ================= -->
+    <div id="view-admin" class="hidden min-h-screen flex-col">
+        <!-- Header Admin -->
+        <header class="bg-white dark:bg-gray-800 shadow-sm p-4 sticky top-0 z-20 flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-3">
+                <button onclick="switchView('landing')" class="text-gray-500 hover:text-emerald-600 dark:text-gray-400 dark:hover:text-emerald-400 transition" title="Ke Beranda">
+                    <i class="fa-solid fa-house"></i>
+                </button>
+                <div class="w-px h-5 bg-gray-300 dark:bg-gray-600"></div>
+                <h1 class="text-xl sm:text-2xl font-black tracking-tight text-emerald-600 dark:text-emerald-400">
+                    <i class="fa-solid fa-chalkboard-user mr-1 text-lg"></i> Admin<span class="text-gray-800 dark:text-white font-light ml-1">Panel</span>
+                </h1>
             </div>
-        </div>
+            
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button onclick="exportJSON()" class="text-xs bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300 px-3 py-1.5 rounded-full font-bold shadow-sm hover:bg-emerald-200 transition flex items-center" title="Cadangkan Data">
+                    <i class="fa-solid fa-download sm:mr-1"></i> <span class="hidden sm:inline">Backup</span>
+                </button>
+                <label class="cursor-pointer text-xs bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300 px-3 py-1.5 rounded-full font-bold shadow-sm hover:bg-indigo-200 transition flex items-center" title="Pulihkan JSON">
+                    <i class="fa-solid fa-upload sm:mr-1"></i> <span class="hidden sm:inline">Pulihkan</span>
+                    <input type="file" id="import-json" class="hidden" accept=".json" onchange="importJSON(event)">
+                </label>
+                <div class="w-px h-5 bg-gray-300 dark:bg-gray-600 mx-1"></div>
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </header>
 
-        <!-- Daftar Jamaah -->
-        <div id="jamaah-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Data Card akan dimuat di sini -->
-        </div>
-    </main>
+        <main class="flex-grow w-full max-w-5xl mx-auto p-4 sm:p-6 flex flex-col gap-6">
+            <!-- Panel Tambah Jamaah -->
+            <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
+                <h2 class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4"><i class="fa-solid fa-user-plus mr-1"></i> Registrasi Jamaah Baru</h2>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <input type="text" id="jamaah-name" placeholder="Nama Lengkap Jamaah" class="flex-grow p-3 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm font-medium">
+                    <select id="jamaah-program" class="p-3 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm cursor-pointer font-medium w-full sm:w-auto">
+                        <option value="Yanbua">Metode Yanbua</option>
+                        <option value="Qiraati">Metode Qiraati</option>
+                        <option value="Tahfiz 30 Juz">Tahfiz 30 Juz</option>
+                        <option value="Tilawah & Tahsin">Tilawah & Tahsin</option>
+                    </select>
+                    <button onclick="addJamaah()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg shadow font-bold transition text-sm whitespace-nowrap flex items-center justify-center">
+                        <i class="fa-solid fa-check mr-2"></i> Daftarkan
+                    </button>
+                </div>
+            </div>
 
-    <!-- MODAL UPDATE PROGRES KOMPREHENSIF -->
+            <!-- Filter & Statistik -->
+            <div class="flex flex-col sm:flex-row justify-between items-center bg-gray-100 dark:bg-gray-800/50 p-2 rounded-xl gap-4 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center gap-4 px-3">
+                    <div class="text-center">
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Total Jamaah</p>
+                        <p class="text-xl font-black text-emerald-600 dark:text-emerald-400 leading-none mt-1" id="stat-total">0</p>
+                    </div>
+                </div>
+                <div class="w-full sm:w-auto flex-grow flex justify-end">
+                    <select id="filter-program" onchange="renderList()" class="w-full sm:w-auto p-2.5 bg-white border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none text-xs font-bold cursor-pointer shadow-sm">
+                        <option value="Semua">Tampilkan Semua Kelas</option>
+                        <option value="Yanbua">Kelas Yanbua</option>
+                        <option value="Qiraati">Kelas Qiraati</option>
+                        <option value="Tahfiz 30 Juz">Kelas Tahfiz</option>
+                        <option value="Tilawah & Tahsin">Kelas Tilawah</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Daftar Jamaah -->
+            <div id="jamaah-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </main>
+    </div>
+
+    <!-- MODAL UPDATE PROGRES KOMPREHENSIF (SAMA SEPERTI SEBELUMNYA) -->
     <div id="update-modal" class="fixed inset-0 bg-black/60 z-[100] hidden flex justify-center items-center backdrop-blur-sm p-4 opacity-0 transition-opacity duration-300">
         <div class="bg-white dark:bg-gray-800 w-full max-w-lg rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300" id="update-modal-content">
-            
             <div class="bg-gradient-to-r from-emerald-600 to-teal-600 p-4 sm:p-5 rounded-t-2xl flex justify-between items-center">
                 <h2 class="text-white font-bold text-lg flex items-center">
                     <i class="fa-solid fa-chart-line mr-2"></i> Evaluasi Jamaah
@@ -97,16 +184,13 @@
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
-
             <div class="p-5 sm:p-6 space-y-4">
                 <input type="hidden" id="edit-id">
-                
                 <div>
                     <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Nama Jamaah</label>
                     <p id="edit-name" class="text-lg font-black text-gray-900 dark:text-white"></p>
                     <p id="edit-program" class="text-xs font-bold text-blue-600 dark:text-blue-400 mt-1"></p>
                 </div>
-
                 <div class="grid grid-cols-2 gap-4 border-t border-gray-200 dark:border-gray-700 pt-4">
                     <div>
                         <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Kehadiran</label>
@@ -114,7 +198,7 @@
                             <option value="Hadir">✅ Hadir</option>
                             <option value="Izin">ℹ️ Izin</option>
                             <option value="Sakit">🏥 Sakit</option>
-                            <option value="Alpa">❌ Alpa (Tanpa Keterangan)</option>
+                            <option value="Alpa">❌ Alpa</option>
                         </select>
                     </div>
                     <div>
@@ -127,30 +211,40 @@
                         </select>
                     </div>
                 </div>
-
                 <div>
                     <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Pencapaian Materi Terakhir</label>
                     <input type="text" id="edit-progress" placeholder="Cth: Jilid 4 Hal 12, atau Juz 30 An-Naba" class="w-full p-3 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm">
                 </div>
-
                 <div>
                     <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Catatan Khusus (Tajwid/Makhraj)</label>
                     <textarea id="edit-notes" rows="2" placeholder="Cth: Perhatikan dengung (Ghunnah) dan panjang pendeknya." class="w-full p-3 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm resize-none"></textarea>
                 </div>
             </div>
-
             <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-b-2xl flex justify-end gap-3 border-t border-gray-200 dark:border-gray-600">
                 <button onclick="closeUpdateModal()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-800 dark:text-white rounded-lg font-bold text-sm transition">Batal</button>
                 <button onclick="saveProgress()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-sm transition flex items-center shadow-md">
-                    <i class="fa-solid fa-save mr-2"></i> Simpan Evaluasi
+                    <i class="fa-solid fa-save mr-2"></i> Simpan
                 </button>
             </div>
-
         </div>
     </div>
 
     <script>
-        // Inisialisasi Data dari Local Storage
+        // --- ROUTING TAMPILAN (VIEW MANAGER) ---
+        function switchView(viewName) {
+            document.getElementById('view-landing').classList.add('hidden');
+            document.getElementById('view-rapor').classList.add('hidden');
+            document.getElementById('view-admin').classList.add('hidden');
+
+            document.getElementById('view-' + viewName).classList.remove('hidden');
+            
+            // Fokus input jika pindah ke halaman rapor
+            if(viewName === 'rapor') {
+                setTimeout(() => document.getElementById('search-input').focus(), 100);
+            }
+        }
+
+        // --- MANAJEMEN DATA ---
         let dataHalaqah = JSON.parse(localStorage.getItem('halaqah_png_pro')) || [];
 
         function saveToLocal() {
@@ -158,6 +252,95 @@
             renderList();
         }
 
+        // --- LOGIKA RAPOR JAMAAH ---
+        function handleSearch(e) {
+            if(e.key === 'Enter') searchJamaah();
+        }
+
+        function searchJamaah() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            const container = document.getElementById('rapor-result-container');
+            
+            if(!query) {
+                container.innerHTML = `<div class="text-center p-6 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl font-medium border border-red-200 dark:border-red-800"><i class="fa-solid fa-circle-exclamation mr-2"></i> Silakan masukkan nama Anda terlebih dahulu.</div>`;
+                return;
+            }
+
+            const results = dataHalaqah.filter(j => j.name.toLowerCase().includes(query));
+
+            if(results.length === 0) {
+                container.innerHTML = `<div class="text-center p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700"><i class="fa-solid fa-file-circle-xmark text-4xl text-gray-300 dark:text-gray-600 mb-4 block"></i><p class="text-gray-600 dark:text-gray-400 font-medium">Maaf, nama <strong class="text-gray-800 dark:text-gray-200">"${query}"</strong> tidak ditemukan dalam sistem.</p><p class="text-sm mt-2 text-gray-500">Hubungi pengajar halaqah Anda untuk konfirmasi nama terdaftar.</p></div>`;
+                return;
+            }
+
+            // Tampilkan hasil pencarian rapor (Bisa jadi ada nama yg mirip, tampilkan semua yang cocok)
+            container.innerHTML = results.map(jamaah => {
+                // Logika Warna Desain Rapor
+                let qColor = "text-gray-600"; let qBg = "bg-gray-100"; let qIcon = "fa-circle-question";
+                if(jamaah.quality === "Lancar") { qColor = "text-emerald-600 dark:text-emerald-400"; qBg = "bg-emerald-50 dark:bg-emerald-900/20"; qIcon = "fa-circle-check"; }
+                if(jamaah.quality === "Kurang") { qColor = "text-yellow-600 dark:text-yellow-400"; qBg = "bg-yellow-50 dark:bg-yellow-900/20"; qIcon = "fa-circle-minus"; }
+                if(jamaah.quality === "Ulangi") { qColor = "text-red-600 dark:text-red-400"; qBg = "bg-red-50 dark:bg-red-900/20"; qIcon = "fa-circle-xmark"; }
+
+                return `
+                <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-6 animate-[fadeIn_0.5s_ease-out]">
+                    <!-- Header Rapor -->
+                    <div class="bg-emerald-600 dark:bg-emerald-800 p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30 text-white">
+                                <i class="fa-solid fa-user-graduate text-3xl"></i>
+                            </div>
+                            <div class="text-left">
+                                <h3 class="text-2xl font-black text-white">${jamaah.name}</h3>
+                                <p class="text-emerald-100 font-medium opacity-90"><i class="fa-solid fa-book-open mr-1"></i> Program: ${jamaah.program}</p>
+                            </div>
+                        </div>
+                        <div class="bg-white/20 px-4 py-2 rounded-xl backdrop-blur-sm border border-white/30 text-center">
+                            <p class="text-[10px] text-emerald-100 uppercase tracking-widest font-bold">Update Terakhir</p>
+                            <p class="text-white font-bold">${jamaah.lastUpdate}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Detail Rapor -->
+                    <div class="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-6">
+                            <!-- Capaian -->
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Capaian Materi Terakhir</p>
+                                <p class="text-xl font-black text-gray-800 dark:text-white">${jamaah.progress}</p>
+                            </div>
+                            <!-- Kualitas -->
+                            <div class="p-4 rounded-2xl ${qBg} border border-opacity-50">
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Kualitas Bacaan</p>
+                                <p class="text-lg font-bold ${qColor} flex items-center">
+                                    <i class="fa-solid ${qIcon} mr-2"></i> ${jamaah.quality || "Belum Dinilai"}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <!-- Kehadiran -->
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Status Kehadiran</p>
+                                <p class="text-lg font-bold text-gray-800 dark:text-gray-200 border-b border-gray-100 dark:border-gray-700 pb-2">
+                                    ${jamaah.attendance}
+                                </p>
+                            </div>
+                            <!-- Catatan -->
+                            <div>
+                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Catatan Pengajar</p>
+                                <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl border-l-4 border-emerald-500 italic text-gray-600 dark:text-gray-300 min-h-[4rem]">
+                                    ${jamaah.notes ? `"${jamaah.notes}"` : "Belum ada catatan khusus pada sesi ini."}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+
+        // --- LOGIKA ADMIN PANEL (TETAP SAMA SEPERTI SEBELUMNYA) ---
         function addJamaah() {
             const nameInput = document.getElementById('jamaah-name');
             const programInput = document.getElementById('jamaah-program');
@@ -189,11 +372,9 @@
             }
         }
 
-        // --- SISTEM MODAL EVALUASI ---
         function openUpdateModal(id) {
             const jamaah = dataHalaqah.find(j => j.id === id);
             if (!jamaah) return;
-
             document.getElementById('edit-id').value = jamaah.id;
             document.getElementById('edit-name').innerText = jamaah.name;
             document.getElementById('edit-program').innerText = "Program: " + jamaah.program;
@@ -233,7 +414,6 @@
             }
         }
 
-        // --- RENDER DAFTAR KARTU ---
         function renderList() {
             const listEl = document.getElementById('jamaah-list');
             const filterVal = document.getElementById('filter-program').value;
@@ -252,52 +432,41 @@
             }
 
             filteredData.forEach(jamaah => {
-                // Logika Warna Badge Kualitas
                 let qBg = "bg-gray-100 text-gray-600";
                 if(jamaah.quality === "Lancar") qBg = "bg-emerald-100 text-emerald-700 border-emerald-200";
                 if(jamaah.quality === "Kurang") qBg = "bg-yellow-100 text-yellow-700 border-yellow-200";
                 if(jamaah.quality === "Ulangi") qBg = "bg-red-100 text-red-700 border-red-200";
 
-                // Logika Warna Kehadiran
                 let attIcon = `<i class="fa-solid fa-check text-emerald-500"></i>`;
                 if(jamaah.attendance === "Izin") attIcon = `<i class="fa-solid fa-circle-info text-blue-500"></i>`;
                 if(jamaah.attendance === "Sakit") attIcon = `<i class="fa-solid fa-house-medical text-yellow-500"></i>`;
                 if(jamaah.attendance === "Alpa") attIcon = `<i class="fa-solid fa-xmark text-red-500"></i>`;
 
-                const card = document.createElement('div');
-                card.className = "bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden";
-                
-                // Pita Indikator Program
                 let ribbonColor = "bg-blue-500";
                 if(jamaah.program === "Qiraati") ribbonColor = "bg-purple-500";
                 if(jamaah.program === "Tahfiz 30 Juz") ribbonColor = "bg-amber-500";
                 if(jamaah.program === "Tilawah & Tahsin") ribbonColor = "bg-cyan-500";
 
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden";
+                
                 card.innerHTML = `
                     <div class="absolute top-0 left-0 w-1 h-full ${ribbonColor}"></div>
-                    
                     <div class="pl-2">
                         <div class="flex justify-between items-start mb-1">
                             <h3 class="text-lg font-black text-gray-900 dark:text-gray-100 truncate pr-2">${jamaah.name}</h3>
                             <button onclick="deleteJamaah('${jamaah.id}')" class="text-gray-300 hover:text-red-500 transition focus:outline-none"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
-                        
                         <div class="flex gap-2 mb-4">
-                            <span class="inline-block bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider border border-gray-200 dark:border-gray-600">
-                                ${jamaah.program}
-                            </span>
-                            <span class="inline-block bg-white dark:bg-gray-800 text-[10px] px-2 py-0.5 rounded font-bold border ${qBg}">
-                                ${jamaah.quality || "Belum Dinilai"}
-                            </span>
+                            <span class="inline-block bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider border border-gray-200 dark:border-gray-600">${jamaah.program}</span>
+                            <span class="inline-block bg-white dark:bg-gray-800 text-[10px] px-2 py-0.5 rounded font-bold border ${qBg}">${jamaah.quality || "Belum Dinilai"}</span>
                         </div>
-                        
                         <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-lg border border-gray-100 dark:border-gray-600 mb-3">
                             <div class="flex justify-between items-center mb-1">
                                 <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase font-bold">Materi Terakhir</p>
                                 <span class="text-xs" title="Kehadiran Terakhir">${attIcon}</span>
                             </div>
                             <p class="text-sm font-bold text-gray-800 dark:text-gray-200">${jamaah.progress}</p>
-                            
                             ${jamaah.notes ? `
                             <div class="mt-2 pt-2 border-t border-dashed border-gray-200 dark:border-gray-600">
                                 <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase font-bold mb-0.5"><i class="fa-solid fa-thumbtack mr-1"></i> Catatan</p>
@@ -305,7 +474,6 @@
                             </div>` : ''}
                         </div>
                     </div>
-                    
                     <div class="flex justify-between items-center mt-auto pl-2 pt-2">
                         <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500"><i class="fa-regular fa-clock mr-1"></i> ${jamaah.lastUpdate}</span>
                         <button onclick="openUpdateModal('${jamaah.id}')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:hover:bg-emerald-800 dark:text-emerald-400 px-4 py-2 rounded-lg text-xs font-bold transition border border-emerald-200 dark:border-emerald-700 shadow-sm flex items-center">
@@ -317,7 +485,7 @@
             });
         }
 
-        // --- SISTEM PEMULIHAN & PENCADANGAN JSON ---
+        // --- EXPORT/IMPORT JSON ---
         function exportJSON() {
             if(dataHalaqah.length === 0) return alert("Tidak ada data untuk dicadangkan.");
             const dataStr = JSON.stringify(dataHalaqah, null, 2);
@@ -325,7 +493,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `HalaqahPro_Backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `HalaqahPapua_Backup_${new Date().toISOString().split('T')[0]}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -354,7 +522,7 @@
             event.target.value = '';
         }
 
-        // --- TEMA GELAP (DARK MODE) ---
+        // --- THEME TOGGLE ---
         const themeToggleBtn = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
         const htmlElement = document.documentElement;
@@ -364,7 +532,7 @@
             themeIcon.className = htmlElement.classList.contains('dark') ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
         });
 
-        // Inisialisasi awal
+        // Initialize Admin List (Hidden in background initially)
         renderList();
     </script>
 </body>
